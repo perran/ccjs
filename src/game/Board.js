@@ -5,6 +5,24 @@ var Board = (function()
 		this.matrix = matrix;
 	}
 	
+	Board.prototype.removeItem = function(itemToRemove)
+	{
+		var height = this.matrix.length;
+
+		for(var y = 0; y < height; y++)
+		{
+			var row = this.matrix[y];
+			var width = row.length;
+			
+			var index = row.indexOf(itemToRemove);
+			if(index != -1)
+			{
+				row.splice(x, 1);
+					return;
+			}
+		}
+	}
+	
 	Board.prototype.print = function()
 	{
 		var toPrint = "";

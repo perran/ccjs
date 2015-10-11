@@ -7,7 +7,7 @@ var Item = (function()
 	
 	Item.prototype.print = function()
 	{
-		return "color: " + this.color;
+		return "color: " + Color[this.color];
 	};
 	
 	return Item;
