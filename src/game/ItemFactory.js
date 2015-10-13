@@ -4,9 +4,11 @@ var ItemFactory = (function()
 	{
 	}
 	
-	ItemFactory.prototype.create = function(color)
+	ItemFactory.prototype.create = function(color, x, y, width, height)
 	{
-		return new Item(color);
+		var rectangle = new Rectangle(x, y, width, height);
+		var item = new Item(color, rectangle);
+		return item;
 	};
 
 	return ItemFactory;
