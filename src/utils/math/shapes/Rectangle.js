@@ -13,9 +13,19 @@ var Rectangle = (function()
 		return this.x;
 	};
 	
+	Rectangle.prototype.setX = function(x)
+	{
+		this.x = x;
+	};
+	
 	Rectangle.prototype.getY = function()
 	{
 		return this.y;
+	};
+	
+	Rectangle.prototype.setY = function(y)
+	{
+		this.y = y;
 	};
 	
 	Rectangle.prototype.getWidth = function()

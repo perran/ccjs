@@ -8,6 +8,7 @@ describe("Board", function()
 	var board;
 	
 	var pointInShapeDetector;
+	var itemFactory;
 
 	beforeEach(function()
 	{
@@ -27,8 +28,11 @@ describe("Board", function()
 					
 		pointInShapeDetector = jasmine.createSpyObj('pointInShapeDetector',
 			['isInsideRectangle']);
+			
+		itemFactory = jasmine.createSpyObj('itemFactory',
+			['createRandomNormal']);
 				
-		board = new Board(matrix, null, pointInShapeDetector);
+		board = new Board(matrix, 2, 2, null, pointInShapeDetector, itemFactory);
 		
 	});
 
@@ -68,8 +72,36 @@ describe("Board", function()
 	
 	describe("when refilling", function()
 	{
-		it("should fill up the column that has less items than the height of the board", function()
+		it("should insert an item and shift the existing items to replace the missing items in the column", function()
 		{
+			board.removeItem(itemB);
+			
+			var newItem = new Item(Color.Blue, null);
+			itemFactory.createRandomNormal.and.returnValues(newItem);
+			
+			board.refill();
+			
+			expect(itemFactory.createRandomNormal).toHaveBeenCalledWith(0, 0, 90, 90);
+			expect(matrix).toEqual([[newItem, itemA], [itemC, itemD]]);
+		});
+	});
+	
+	describe("when swapping", function()
+	{
+		it("should swap the position the given items in the matrix", function()
+		{
+			board.swap(itemB, itemC);
+			expect(matrix).toEqual([[itemA, itemC], [itemB, itemD]]);
+		});
+	});
+	
+	describe("when finding", function()
+	{
+		it("should return the matrix position of the item", function()
+		{
+			var pos = board.find(itemC);
+			expect(pos.px).toEqual(1);
+			expect(pos.py).toEqual(0);
 		});
 	});
 });
