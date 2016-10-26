@@ -1,8 +1,12 @@
 var Game = (function()
 {
+        var _this;
 	function Game()
 	{
 		this.board;
+		this.selectedItem = null;
+		this.cmi;
+                _this = this;
 	}
 	
 	Game.prototype.run = function()
@@ -31,76 +35,13 @@ var Game = (function()
 		
 		var canvas = document.getElementById("myCanvas");
 		
-		canvas.addEventListener('selectstart', 
-			function(e) { e.preventDefault(); return false; },
-			false); //making double click to not select text on canvas
-		
+		this.cmi = new CanvasMouseInteractor(canvas, this);
 		
 		var x = -1;
 		var y = -1;
 		
-		var _this = this;
-		
-		/*
-		canvas.addEventListener('click', 
-			function(e){
-				var rect = canvas.getBoundingClientRect();
-				x = (e.clientX - rect.left) / (rect.right - rect.left) * canvas.width;
-				y = (e.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height;
-				
-				var item = _this.board.getItemByCoordinate(x, y);
-				
-				if(item)
-				{
-					_this.board.removeItem(item);
-					_this.board.refill();
-					_this.board.updateItemsPositions();
-					_this.board.draw();
-				}
-			},
-			false);
-		*/
-		
-		var selectedItem = null;
-		
-		var mouseMoveFunction = function(e) 
-		{
-			var rect = canvas.getBoundingClientRect();
-			x = (e.clientX - rect.left) / (rect.right - rect.left) * canvas.width;
-			y = (e.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height;
-			
-			var item = _this.board.getItemByCoordinate(x, y);
-			if(item !== selectedItem)
-			{
-				_this.board.swap(item, selectedItem);
-				_this.board.updateItemsPositions();
-				_this.board.draw();
-			}
-		}
-		
-		canvas.addEventListener('mousedown', 
-			function(e) 
-			{
-				var rect = canvas.getBoundingClientRect();
-				x = (e.clientX - rect.left) / (rect.right - rect.left) * canvas.width;
-				y = (e.clientY - rect.top) / (rect.bottom - rect.top) * canvas.height;
-				
-				selectedItem = _this.board.getItemByCoordinate(x, y);
-				
-				if(selectedItem)
-				{	
-					canvas.addEventListener('mousemove', mouseMoveFunction,	true);
-				}
-			
-			}, 
-		true);
-		
-		canvas.addEventListener('mouseup', 
-			function(e) 
-			{
-				canvas.removeEventListener('mousemove', mouseMoveFunction,	true);
-			}, 
-		true);
+		this.cmi.enableListenToMouseUp();
+		this.cmi.enableListenToMouseDown();
 		
 		var canvasContext = canvas.getContext("2d");
 		
@@ -118,6 +59,47 @@ var Game = (function()
 		
 		
 	};
+	
+	Game.prototype.onMouseDown = function(x, y) 
+	{
+            console.log('down')
+            _this.selectedItem = _this.board.getItemByCoordinate(x, y);
+
+            if(_this.selectedItem)
+            {	
+                _this.cmi.enableListenToMouseMove();
+            }
+	};
+        
+        Game.prototype.onMouseUp = function(x, y) 
+        {
+            console.log('up')
+            _this.cmi.disableListenToMouseMove();
+        };
+        
+        Game.prototype.onMouseMove = function(x, y)
+        {
+            var item = _this.board.getItemByCoordinate(x, y);
+            if(item !== _this.selectedItem)
+            {
+                _this.board.swap(item, _this.selectedItem);
+                _this.board.updateItemsPositions();
+                _this.board.draw();
+            }
+        };
+        
+        Game.prototype.onClick = function(x, y)
+        {
+            var item = _this.board.getItemByCoordinate(x, y);
+
+            if(item)
+            {
+                _this.board.removeItem(item);
+                _this.board.refill();
+                _this.board.updateItemsPositions();
+                _this.board.draw();
+            }
+        };
 	
 	return Game;
 })();
