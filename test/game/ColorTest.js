@@ -8,17 +8,34 @@ describe("Color", function()
 	{
 		it("should have red", function()
 		{
-			expect(Color[Color.Red]).toBe("Red");
+			expect(Color.Red.getName()).toBe("Red");
+                        
 		});
 		
 		it("should have green", function()
 		{
-			expect(Color[Color.Green]).toBe("Green");
+			expect(Color.Green.getName()).toBe("Green");
 		});
 		
 		it("should have blue", function()
 		{
-			expect(Color[Color.Blue]).toBe("Blue");
+			expect(Color.Blue.getName()).toBe("Blue");
 		});
+                
 	});
+        
+        describe("when using enum", function()
+        {
+            it("should be comparable to the === operator", function()
+            {
+                expect(Color.Red === Color.Red).toBe(true);
+                expect(Color.Red === Color.Blue).toBe(false);
+            });
+        });
+        
+        describe("when working with .enums", function(){
+           it("should contain all the enums created", function(){
+              expect(Color.enums.includes(Color.Red, Color.Blue, Color.Green)).toBe(true); 
+           });
+        });
 });

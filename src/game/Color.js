@@ -1,9 +1,17 @@
-var Color;
+class Color{
+    constructor(name){
+        this.name = name;
+        Color.enums.push(this);
+    }
+    
+    getName(){
+        return this.name;
+    }
+}
 
-(function (Color) 
-{
-    Color[Color["Red"] = 0] = "Red";
-    Color[Color["Green"] = 1] = "Green";
-    Color[Color["Blue"] = 2] = "Blue";
-})
-(Color || (Color = {}));
+Color.enums = []
+
+Color.Red = new Color("Red");
+Color.Green = new Color("Green");
+Color.Blue = new Color("Blue");
+

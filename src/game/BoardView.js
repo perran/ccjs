@@ -22,7 +22,7 @@ var BoardView = (function()
 				var rectangle = item.getRectangle();
 				var color = item.getColor();
 				
-				this.canvasContextWrapper.fillStyle(Color[color]);
+				this.canvasContextWrapper.fillStyle(color.getName());
 
 				this.canvasContextWrapper.fillRect(
 					rectangle.getX(), 

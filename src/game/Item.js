@@ -18,7 +18,7 @@ var Item = (function()
 	
 	Item.prototype.print = function()
 	{
-		return "color: " + Color[this.color];
+		return "color: " + this.color.getName();
 	};
 	
 	return Item;

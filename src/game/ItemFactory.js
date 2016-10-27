@@ -16,7 +16,7 @@ var ItemFactory = (function()
 	{
 		var randomColor = this.randomizer.getIntInInterval(0, 2);
 		var rectangle = new Rectangle(x, y, width, height);
-		var item = new Item(Color[Color[randomColor]], rectangle);
+		var item = new Item(Color.enums[randomColor], rectangle);
 		return item;
 	};
 
