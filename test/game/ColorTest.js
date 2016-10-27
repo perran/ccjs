@@ -38,4 +38,9 @@ describe("Color", function()
               expect(Color.enums.includes(Color.Red, Color.Blue, Color.Green)).toBe(true); 
            });
         });
+        
+        describe("when creating from an array", function()
+        {
+            
+        });
 });
