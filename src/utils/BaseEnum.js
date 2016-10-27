@@ -5,10 +5,9 @@ class BaseEnum{
     }
     
     static createPlainEnums(array){
-        	
         for (let i = 0, length = array.length; i < length; i++) {
             let name = array[i];
-            let _this = this.constructor(name);
+            let _this = new this(name);
             this[name] = _this;
         }
         
@@ -18,7 +17,7 @@ class BaseEnum{
         return this.name;
     }
     
-    getEnums(){
+    static getEnums(){
         return BaseEnum.enums;
     }
 }

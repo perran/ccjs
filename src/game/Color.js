@@ -1,10 +1,4 @@
-class Color extends BaseEnum{
-    constructor(name){
-        super(name);
-    }
-}
+class Color extends BaseEnum{}
 
-Color.Red = new Color("Red");
-Color.Green = new Color("Green");
-Color.Blue = new Color("Blue");
+Color.createPlainEnums(['Red', 'Green', 'Blue']);
 
