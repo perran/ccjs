@@ -6,27 +6,10 @@ describe("BaseEnum", function()
 
         describe("when creating enum", function()
         {
-            describe("by newing each one up", function()
-            {
-                class NewEnum extends BaseEnum{};
-                NewEnum.A = new NewEnum("A");
-                NewEnum.B = new NewEnum("B");
-                
-                it("should include the enums in the enum array", function()
-                {              
-                    expect(NewEnum.enums.includes(NewEnum.A, NewEnum.B)).toBe(true); 
-                });
-            
-                it("should be able to get its given name", function()
-                {              
-                    expect(NewEnum.A.getName()).toBe("A"); 
-                });
-            });
-            
             describe("by using a string array", function()
             {
                 class ArrEnum extends BaseEnum{};
-                ArrEnum.createPlainEnums(["C", "D"]);
+                ArrEnum.createFromArray(["C", "D"]);
                 
                 it("it should include the enums in the enum array", function()
                 {              
@@ -42,6 +25,15 @@ describe("BaseEnum", function()
                 {
                     expect(ArrEnum.C === ArrEnum.C).toBe(true);
                     expect(ArrEnum.C === ArrEnum.D).toBe(false);
+                });
+                
+                it("should make sure enums are different even if they have the same enum name", function()
+                {
+                    class OtherEnum extends BaseEnum{};
+                    OtherEnum.createFromArray(["D", "E"]);
+                    expect(BaseEnum.D).toBeFalsy();
+                    expect(OtherEnum.D === ArrEnum.D).toBe(false);
+                    expect(OtherEnum.D.getName() === ArrEnum.D.getName()).toBe(true);
                 });
             });
         });

@@ -1,4 +1,4 @@
-class Color extends BaseEnum{}
+class Color extends BaseEnum{};
 
-Color.createPlainEnums(['Red', 'Green', 'Blue']);
+Color.createFromArray(['Red', 'Green', 'Blue']);
 
