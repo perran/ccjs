@@ -6,16 +6,38 @@ describe("BaseEnum", function()
 
         describe("when testing this", function()
         {
-            class B
+            class C
             {
-                constructor(callbacker)
-                {
-                    this.callbacker = callbacker;
+                constructor(){}
+                
+                addListener(listener){
+                    this.listener = listener;
                 }
                 
-                doCallback()
+                doCallback(){
+                    this.listener("hear");
+                }
+            }
+            
+            class B
+            {
+                constructor(straightCallbacker, eventishCallbacker)
                 {
-                    this.callbacker.handleLaugh("hehe");
+                    this.straightCallbacker = straightCallbacker;
+                    this.eventishCallbacker = eventishCallbacker;
+                }
+                
+                doStraightCallback()
+                {
+                    this.straightCallbacker.handleLaugh("hehe");
+                }
+                
+                connectEventishCallback()
+                {
+                    this.eventishCallbacker((e) =>
+                    {
+                        this.straightCallbacker.handleEventishLaugh("hoho");
+                    });
                 }
                 
             }
