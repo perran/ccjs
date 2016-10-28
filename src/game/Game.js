@@ -1,15 +1,15 @@
-var Game = (function()
+class Game
 {
-        var _this;
-	function Game()
+
+	constructor()
 	{
 		this.board;
 		this.selectedItem = null;
 		this.cmi;
-                _this = this;
+                this._this = this;
 	}
 	
-	Game.prototype.run = function()
+	run()
 	{
 		var randomizer = new Randomizer();
 		var itemFactory = new ItemFactory(randomizer);
@@ -55,51 +55,48 @@ var Game = (function()
 		this.board.draw();
 		
 		console.log("board:\n" + this.board.print());
+        }
 		
-		
-		
-	};
 	
-	Game.prototype.onMouseDown = function(x, y) 
+	
+	onMouseDown(x, y) 
 	{
-            console.log('down')
-            _this.selectedItem = _this.board.getItemByCoordinate(x, y);
+            console.log('down');
+            this.selectedItem = this.board.getItemByCoordinate(x, y);
 
-            if(_this.selectedItem)
+            if(this.selectedItem)
             {	
-                _this.cmi.enableListenToMouseMove();
+                this.cmi.enableListenToMouseMove();
             }
 	};
         
-        Game.prototype.onMouseUp = function(x, y) 
+        onMouseUp(x, y) 
         {
-            console.log('up')
-            _this.cmi.disableListenToMouseMove();
-        };
+            console.log('up');
+            this.cmi.disableListenToMouseMove();
+        }
         
-        Game.prototype.onMouseMove = function(x, y)
+        onMouseMove(x, y)
         {
-            var item = _this.board.getItemByCoordinate(x, y);
-            if(item !== _this.selectedItem)
+            var item = this.board.getItemByCoordinate(x, y);
+            if(item !== this.selectedItem)
             {
-                _this.board.swap(item, _this.selectedItem);
-                _this.board.updateItemsPositions();
-                _this.board.draw();
+                this.board.swap(item, selectedItem);
+                this.board.updateItemsPositions();
+                this.board.draw();
             }
-        };
+        }
         
-        Game.prototype.onClick = function(x, y)
+        onClick(x, y)
         {
-            var item = _this.board.getItemByCoordinate(x, y);
+            var item = this.board.getItemByCoordinate(x, y);
 
             if(item)
             {
-                _this.board.removeItem(item);
-                _this.board.refill();
-                _this.board.updateItemsPositions();
-                _this.board.draw();
+                this.board.removeItem(item);
+                this.board.refill();
+                this.board.updateItemsPositions();
+                this.board.draw();
             }
-        };
-	
-	return Game;
-})();
+        }
+}

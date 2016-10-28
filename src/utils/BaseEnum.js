@@ -1,4 +1,5 @@
-class BaseEnum{
+class BaseEnum
+{
     constructor(name){
         this.name = name;
         BaseEnum.enums.push(this);
