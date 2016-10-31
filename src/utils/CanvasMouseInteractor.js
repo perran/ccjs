@@ -12,6 +12,9 @@ class CanvasMouseInteractor
 				return false; 
 			},
 			false); //making double click to not select text on canvas
+                        
+                        
+                this._mouseMoveBinder = (e) => this._mouseMoving(e);
 	}
 
 	enableListenToClick()
@@ -50,13 +53,18 @@ class CanvasMouseInteractor
 
 	enableListenToMouseMove()
 	{
-		this._enableListenToMouseEvent('mousemove', this.callbackHandler.onMouseMove);
+                this.canvas.addEventListener('mousemove', this._mouseMoveBinder, true);
 	}
 	
 	disableListenToMouseMove()
 	{
-		this.canvas.removeEventListener('mousemove', this.callbackHandler.onMouseMove, true);
+            this.canvas.removeEventListener('mousemove', this._mouseMoveBinder, true);
 	}
+        
+        _mouseMoving(e){
+                let [x, y] = this._getPosition(e);
+                this.callbackHandler.onMouseMove(x, y);
+        }
 
 	_enableListenToMouseEvent(eventName, functionToBeCalled)
 	{

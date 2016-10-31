@@ -81,7 +81,7 @@ class Game
             var item = this.board.getItemByCoordinate(x, y);
             if(item !== this.selectedItem)
             {
-                this.board.swap(item, selectedItem);
+                this.board.swap(item, this.selectedItem);
                 this.board.updateItemsPositions();
                 this.board.draw();
             }
