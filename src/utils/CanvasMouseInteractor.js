@@ -4,8 +4,10 @@ class CanvasMouseInteractor
 	{
 		this.canvas = canvas;
 		this.callbackHandler = callbackHandler;
+
+                this.eventListener = new EventListener(canvas); 
                         
-                this._mouseClickHandlerReference = (e) => this._mouseClickHandler(e);
+                //this._mouseClickHandlerReference = (e) => this._mouseClickHandler(e);
                 this._mouseMoveHandlerReference = (e) => this._mouseMoveHandler(e);
                 this._mouseDownHandlerReference = (e) => this._mouseDownHandler(e);
                 this._mouseUpHandlerReference = (e) => this._mouseUpHandler(e);
@@ -29,7 +31,8 @@ class CanvasMouseInteractor
 
 	enableListenToClick()
 	{
-            this.canvas.addEventListener('click', this._mouseClickHandlerReference, false);
+            this.eventListener.register('click', _mouseClickHandler);
+            //this.canvas.addEventListener('click', this._mouseClickHandlerReference, false);
 	}
         
         _mouseClickHandler(e)
