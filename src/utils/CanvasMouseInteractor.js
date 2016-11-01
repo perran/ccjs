@@ -4,78 +4,77 @@ class CanvasMouseInteractor
 	{
 		this.canvas = canvas;
 		this.callbackHandler = callbackHandler;
-		
-		canvas.addEventListener('selectstart', 
-			(e)=>
-			{
-				e.preventDefault(); 
-				return false; 
-			},
-			false); //making double click to not select text on canvas
                         
-                        
-                this._mouseMoveBinder = (e) => this._mouseMoving(e);
+                this._mouseClickHandlerReference = (e) => this._mouseClickHandler(e);
+                this._mouseMoveHandlerReference = (e) => this._mouseMoveHandler(e);
+                this._mouseDownHandlerReference = (e) => this._mouseDownHandler(e);
+                this._mouseUpHandlerReference = (e) => this._mouseUpHandler(e);
+                
+                this._selectStartHandlerReference = (e) => this._selectStartHandler(e);
+                
+                this._enableSelectStart();
 	}
+        
+        _enableSelectStart()
+        {
+            //making double click to not select text on canvas
+            this.canvas.addEventListener('selectstart', this._selectStartHandlerReference, false);
+        }
+        
+        _selectStartHandler(e)
+        {
+            e.preventDefault(); 
+            return false; 
+        }
 
 	enableListenToClick()
 	{
-		this.canvas.addEventListener('click', 
-			(e)=>
-			{
-				let [x, y] = this._getPosition(e);
-				this.callbackHandler.onClick(x, y);
-			},
-			false);
+            this.canvas.addEventListener('click', this._mouseClickHandlerReference, false);
 	}
+        
+        _mouseClickHandler(e)
+        {
+            let [x, y] = this._getPosition(e);
+            this.callbackHandler.onClick(x, y);
+        }
 
 	enableListenToMouseDown()
 	{
-		this.canvas.addEventListener('mousedown', 
-		(e)=> 
-		{
-
-			let [x, y] = this._getPosition(e);
-			this.callbackHandler.onMouseDown(x, y);
-		}, 
-		true);
+            this.canvas.addEventListener('mousedown', this._mouseDownHandlerReference, true);
 	}
+        
+        _mouseDownHandler(e)
+        {
+            let [x, y] = this._getPosition(e);
+            this.callbackHandler.onMouseDown(x, y);
+        }
 
 	enableListenToMouseUp()
 	{
-		this.canvas.addEventListener('mouseup', 
-		(e)=> 
-		{
-			let [x, y] = this._getPosition(e);
-			this.callbackHandler.onMouseUp(x, y);
-		}, 
-		true);
+            this.canvas.addEventListener('mouseup', this._mouseUpHandlerReference, true);
 	}
+        
+        _mouseUpHandler(e)
+        {
+            let [x, y] = this._getPosition(e);
+            this.callbackHandler.onMouseUp(x, y); 
+        }
 
 	enableListenToMouseMove()
 	{
-                this.canvas.addEventListener('mousemove', this._mouseMoveBinder, true);
+            this.canvas.addEventListener('mousemove', this._mouseMoveHandlerReference, true);
 	}
 	
 	disableListenToMouseMove()
 	{
-            this.canvas.removeEventListener('mousemove', this._mouseMoveBinder, true);
+            this.canvas.removeEventListener('mousemove', this._mouseMoveHandlerReference, true);
 	}
         
-        _mouseMoving(e){
+        _mouseMoveHandler(e)
+        {
                 let [x, y] = this._getPosition(e);
                 this.callbackHandler.onMouseMove(x, y);
         }
-
-	_enableListenToMouseEvent(eventName, functionToBeCalled)
-	{
-		this.canvas.addEventListener(eventName, 
-		(e)=> 
-		{
-			let [x, y] = this._getPosition(e);
-			functionToBeCalled(x, y);
-		}, 
-		true);
-	}
 
 	_getPosition(e)
 	{
