@@ -1,6 +1,6 @@
 describe("Randomizer", function()
 {
-	var randomizer;
+	let randomizer;
 	
 	beforeEach(function()
 	{
@@ -11,15 +11,15 @@ describe("Randomizer", function()
 	//and contains the values within the range
 	describe("when getting random between interval", function()
 	{
-		var testRandomRange = function(min, max)
+		let testRandomRange = function(min, max)
 		{
-			var counter = 0;
-			var randomValues = []
-			var outOfBounds = false;
+			let counter = 0;
+			let randomValues = []
+			let outOfBounds = false;
 				
 			while(counter < 300)
 			{
-				var actual = randomValues[counter] = randomizer.getIntInInterval(min, max);
+				let actual = randomValues[counter] = randomizer.getIntInInterval(min, max);
 				if(actual < min || actual > max)
 				{
 					outOfBounds = true;
@@ -29,7 +29,7 @@ describe("Randomizer", function()
 			}
 			
 			expect(outOfBounds).toBe(false);
-			for(var i = min; i < max; i++)
+			for(let i = min; i < max; i++)
 			{
 				expect(randomValues).toContain(i);
 			}
