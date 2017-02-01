@@ -1,13 +1,13 @@
 class Randomizer
 {
-    constructor()
+    constructor(randomWrapper)
     {
-        
+        this.randomWrapper = randomWrapper;
     }
     
     getNumber()
     {
-        return Math.random();
+        return this.randomWrapper.random();
     }
 	
     getIntInInterval(min, max)
@@ -16,7 +16,7 @@ class Randomizer
         {
             throw new Error("Min is greater than max!");
         }
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+        return Math.floor(this.getNumber() * (max - min + 1)) + min;
     }
 
 }

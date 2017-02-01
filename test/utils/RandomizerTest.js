@@ -1,43 +1,31 @@
 describe("Randomizer", function()
 {
 	let randomizer;
+        let randomWrapper;
 	
 	beforeEach(function()
 	{
-		randomizer = new Randomizer();
+                randomWrapper = jasmine.createSpyObj('randomWrapper', ['random']);
+		randomizer = new Randomizer(randomWrapper);
 	});
 
-	//just some crude testing for checking that random values (negative included) stays within boundaries
-	//and contains the values within the range
 	describe("when getting random between interval", function()
 	{
 		let testRandomRange = function(min, max)
 		{
-			let counter = 0;
-			let randomValues = []
-			let outOfBounds = false;
-				
-			while(counter < 300)
-			{
-				let actual = randomValues[counter] = randomizer.getIntInInterval(min, max);
-				if(actual < min || actual > max)
-				{
-					outOfBounds = true;
-					break;
-				}
-				counter++;
-			}
-			
-			expect(outOfBounds).toBe(false);
-			for(let i = min; i < max; i++)
-			{
-				expect(randomValues).toContain(i);
-			}
+                        randomWrapper.random.and.returnValues(0,0.5,0.999999999);
+                        let actual = randomizer.getIntInInterval(min, max);
+                        expect(actual).toBe(min);
+                        actual = randomizer.getIntInInterval(min, max);
+                        expect(actual).toBe((max-min)/2);
+                        actual = randomizer.getIntInInterval(min, max);
+                        expect(actual).toBe(max);                    
 		};
 		
-		
+                
 		it("should contain 0 to 3", function()
 		{
+                        randomWrapper.random.and.returnValues(0,0.5,1);
 			testRandomRange(0, 3);
 		});
 		
