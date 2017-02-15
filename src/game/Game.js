@@ -7,11 +7,13 @@ class Game
 		this.selectedItem = null;
 		this.cmi;
                 this._this = this;
+                this.timer;
 	}
 	
 	run()
 	{
-		var randomizer = new Randomizer();
+		let randomWrapper = new RandomWrapper();
+		var randomizer = new Randomizer(randomWrapper);
 		var itemFactory = new ItemFactory(randomizer);
 		var ITEM_SIZE = 90;
 		
@@ -55,7 +57,43 @@ class Game
 		this.board.draw();
 		
 		console.log("board:\n" + this.board.print());
-        }
+		
+		console.dir("window:\n" + window);
+		var timeParser = new TimeParser();
+			
+		
+		let printText = (textToPrint)=>{
+			let x = 500;
+			let textHeight = 24;
+			let y = 450+textHeight;
+
+			
+			canvasContext.font = 'italic ' + textHeight + 'px Arial';
+			canvasContext.fillStyle = 'purple';
+			
+			textToPrint = timeParser.fromSeconds(textToPrint, "mm:ss");
+			
+			let textWidth = canvasContext.measureText(textToPrint).width;
+
+			canvasContext.clearRect(x, y, textWidth+1, -textHeight);
+			
+			canvasContext.fillText(textToPrint, x, y);
+		}
+		
+		let intervalCallback = (timeLeftInSeconds)=>{
+			printText(timeLeftInSeconds);
+		}
+
+		let outOfTimeCallback = ()=>{
+			printText(0)
+		};
+		
+			let intervalFactory = new IntervalFactory(window);
+			
+			this.timer = new Timer(intervalFactory, 10, "", intervalCallback, outOfTimeCallback);
+			this.timer.start();
+			
+	}
 		
 	
 	

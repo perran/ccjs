@@ -2,3 +2,5 @@
 /coverage/
 /nbproject/
 /node_modules/
+/.project
+/.settings/

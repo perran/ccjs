@@ -17,7 +17,7 @@ describe("Randomizer", function()
                         let actual = randomizer.getIntInInterval(min, max);
                         expect(actual).toBe(min);
                         actual = randomizer.getIntInInterval(min, max);
-                        expect(actual).toBe((max-min)/2);
+                        expect(actual).toBe(Math.ceil(0.5 * (min + max)));
                         actual = randomizer.getIntInInterval(min, max);
                         expect(actual).toBe(max);                    
 		};
@@ -25,7 +25,6 @@ describe("Randomizer", function()
                 
 		it("should contain 0 to 3", function()
 		{
-                        randomWrapper.random.and.returnValues(0,0.5,1);
 			testRandomRange(0, 3);
 		});
 		
