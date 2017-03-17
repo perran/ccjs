@@ -4,21 +4,16 @@ class CanvasMouseInteractor
 	{
 		this.canvas = canvas;
 		this.callbackHandler = callbackHandler;
+
+                this.eventListener = new EventListener(canvas); 
                         
-                this._mouseClickHandlerReference = (e) => this._mouseClickHandler(e);
-                this._mouseMoveHandlerReference = (e) => this._mouseMoveHandler(e);
-                this._mouseDownHandlerReference = (e) => this._mouseDownHandler(e);
-                this._mouseUpHandlerReference = (e) => this._mouseUpHandler(e);
-                
-                this._selectStartHandlerReference = (e) => this._selectStartHandler(e);
-                
                 this._enableSelectStart();
 	}
         
         _enableSelectStart()
         {
             //making double click to not select text on canvas
-            this.canvas.addEventListener('selectstart', this._selectStartHandlerReference, false);
+            this.eventListener.register('selectstart', (e) => this._selectStartHandler(e));
         }
         
         _selectStartHandler(e)
@@ -29,7 +24,7 @@ class CanvasMouseInteractor
 
 	enableListenToClick()
 	{
-            this.canvas.addEventListener('click', this._mouseClickHandlerReference, false);
+            this.eventListener.register('click', (e) => this._mouseClickHandler(e));
 	}
         
         _mouseClickHandler(e)
@@ -40,7 +35,7 @@ class CanvasMouseInteractor
 
 	enableListenToMouseDown()
 	{
-            this.canvas.addEventListener('mousedown', this._mouseDownHandlerReference, true);
+            this.eventListener.register('mousedown', (e) => this._mouseDownHandler(e));
 	}
         
         _mouseDownHandler(e)
@@ -51,7 +46,7 @@ class CanvasMouseInteractor
 
 	enableListenToMouseUp()
 	{
-            this.canvas.addEventListener('mouseup', this._mouseUpHandlerReference, true);
+            this.eventListener.register('mouseup', (e) => this._mouseUpHandler(e));
 	}
         
         _mouseUpHandler(e)
@@ -62,12 +57,12 @@ class CanvasMouseInteractor
 
 	enableListenToMouseMove()
 	{
-            this.canvas.addEventListener('mousemove', this._mouseMoveHandlerReference, true);
+            this.eventListener.register('mousemove', (e) => this._mouseMoveHandler(e));
 	}
 	
 	disableListenToMouseMove()
 	{
-            this.canvas.removeEventListener('mousemove', this._mouseMoveHandlerReference, true);
+            this.eventListener.unregister('mousemove');
 	}
         
         _mouseMoveHandler(e)
