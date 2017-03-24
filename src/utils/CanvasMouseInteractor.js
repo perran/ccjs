@@ -1,11 +1,11 @@
 class CanvasMouseInteractor
 {
-	constructor(canvas, callbackHandler) 
+	constructor(canvas, callbackHandler, eventListener) 
 	{
 		this.canvas = canvas;
 		this.callbackHandler = callbackHandler;
 
-                this.eventListener = new EventListener(canvas); 
+                this.eventListener = eventListener; 
                         
                 this._enableSelectStart();
 	}

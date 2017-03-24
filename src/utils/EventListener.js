@@ -16,7 +16,8 @@ class EventListener
 
     unregister(event) {
         if(this._eventMap.has(event)){
-            this._target.removeEventListener(event, this._eventMap.get(event), true);
+        	let eventToRemove = this._eventMap.get(event);
+            this._target.removeEventListener(event, eventToRemove, true);
             this._eventMap.delete(event);
         }
     }

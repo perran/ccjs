@@ -23,4 +23,8 @@ class CanvasContextWrapper
 	fillText(text, width, height){
 		this.canvasContext.fillText(text, x, y);
 	}
+	
+	drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight){
+		this.canvasContext.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+	}
 }

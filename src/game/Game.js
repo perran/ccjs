@@ -36,8 +36,8 @@ class Game
 		*/
 		
 		var canvas = document.getElementById("myCanvas");
-		
-		this.cmi = new CanvasMouseInteractor(canvas, this);
+		let eventListener = new EventListener(canvas);
+		this.cmi = new CanvasMouseInteractor(canvas, this, eventListener);
 		
 		var x = -1;
 		var y = -1;
@@ -92,6 +92,49 @@ class Game
 			
 			this.timer = new Timer(intervalFactory, 10, "", intervalCallback, outOfTimeCallback);
 			this.timer.start();
+			
+			var img=document.getElementById("myAtlas");
+			var uniformAtlas=document.getElementById("uniform_atlas");
+			
+			canvasContextWrapper.drawImage(img, 320, 0, 320, 320, 400, 100, 320, 320)
+			
+			
+			var startTime = null;
+			var frameX = 0;
+			var totalNumberOfFrames = 4;
+			var fullAnimationTime = 200;
+			var lastFrame;
+			//element.style.position = 'absolute';
+
+			function step(timestamp) {
+			  let progress = timestamp - startTime;
+
+			  if(progress >= fullAnimationTime ){
+				  startTime = timestamp;
+				  progress = 0;
+			  }
+			  
+			  let percentage = progress / fullAnimationTime;
+			  let currentFrame = Math.floor(percentage*totalNumberOfFrames);
+			  
+			  if(lastFrame !== currentFrame){
+				  	lastFrame = currentFrame;
+			  		let frameWidth = 41;
+			  		canvasContextWrapper.drawImage(uniformAtlas, currentFrame*frameWidth, 0, frameWidth, 70, 700, 200, frameWidth*2, 70*2);
+			  }
+				
+			  
+			  
+			  window.requestAnimationFrame(step);
+			}
+
+			window.requestAnimationFrame(function(timestamp){
+				startTime = timestamp;
+				step(timestamp)
+			});
+			
+			
+			
 			
 	}
 		
