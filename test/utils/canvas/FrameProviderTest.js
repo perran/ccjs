@@ -32,27 +32,36 @@ describe("FrameProvider", function()
 		it("should give back xywh for frames by different sizes", function(){
 			
 			let frameProvider = new FrameProvider();
+			let time = 2000;
 			
-			let spriteSheetMetaData = {
-					"frames":[
+			let spriteSheetMetaData = 
+			{
+				"data": 
+				{
+					"run": 
 					{
-						"x": 0,
-						"y": 0,
-						"w": 50,
-						"h": 25
-					},
-					{
-						"x": 50,
-						"y": 0,
-						"w": 40,
-						"h": 30
+						"frames": 
+						[
+							{
+								"x": 50,
+								"y": 0,
+								"w": 40,
+								"h": 30
+							},
+							{
+								"x": 90,
+								"y": 0,
+								"w": 60,
+								"h": 100
+							} 
+						]
 					}
-				]
+				}
 			}
 		
-			let actual = frameProvider.getFrameByIndex(1, spriteSheetMetaData);
+			let actual = frameProvider.getFrameByIndex(spriteSheetMetaData.data["run"], 1);
 			
-			expect(actual).toBe(spriteSheetMetaData.frames[1]);
+			expect(actual).toBe(spriteSheetMetaData.data["run"].frames[1]);
 		});
 		
 		it("should give back xywh for frames of same sizes", function(){

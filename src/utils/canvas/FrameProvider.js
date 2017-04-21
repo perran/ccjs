@@ -8,8 +8,8 @@ class FrameProvider{
 		return spriteSheet[name];
 	}
 	
-	getFrameByIndex(index, spriteSheet){
-		return spriteSheet.frames[index];
+	getFrameByIndex(animationData, frameIndex){
+		return animationData.frames[frameIndex];
 	}
 	
 	getFrameByUniformSize(width, height, index){

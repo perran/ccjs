@@ -97,39 +97,62 @@ class Game
 			var uniformAtlas=document.getElementById("uniform_atlas");
 			
 			canvasContextWrapper.drawImage(img, 320, 0, 320, 320, 400, 100, 320, 320)
+			let frameProvider = new FrameProvider();
+			var animationElement;
 			
-			
-			var startTime = null;
-			var frameX = 0;
-			var totalNumberOfFrames = 4;
-			var fullAnimationTime = 200;
-			var lastFrame;
-			//element.style.position = 'absolute';
-
+			let animationSheet = 
+			{
+				"data": 
+				{
+					"numbers": 
+					{
+						"time": 4000,
+						"frames": 
+						[
+							{
+								"x": 0,
+								"y": 0,
+								"w": 320,
+								"h": 320
+							},
+							{
+								"x": 320,
+								"y": 0,
+								"w": 320,
+								"h": 320
+							},
+							{
+								"x": 0,
+								"y": 320,
+								"w": 320,
+								"h": 320
+							},
+							{
+								"x": 320,
+								"y": 320,
+								"w": 320,
+								"h": 320
+							}
+						]
+					}
+				}
+			}
+		
+			let runAnimationData = animationSheet.data["numbers"];
+						
+			//calls itself over and over
 			function step(timestamp) {
-			  let progress = timestamp - startTime;
 
-			  if(progress >= fullAnimationTime ){
-				  startTime = timestamp;
-				  progress = 0;
-			  }
+				let ad = animationElement.update(timestamp);
 			  
-			  let percentage = progress / fullAnimationTime;
-			  let currentFrame = Math.floor(percentage*totalNumberOfFrames);
+				canvasContextWrapper.drawImage(uniformAtlas, ad.x, ad.y, ad.w, ad.h, 750, 200, ad.w, ad.h);
 			  
-			  if(lastFrame !== currentFrame){
-				  	lastFrame = currentFrame;
-			  		let frameWidth = 41;
-			  		canvasContextWrapper.drawImage(uniformAtlas, currentFrame*frameWidth, 0, frameWidth, 70, 700, 200, frameWidth*2, 70*2);
-			  }
-				
-			  
-			  
-			  window.requestAnimationFrame(step);
+				window.requestAnimationFrame(step);
 			}
 
+			//runs once
 			window.requestAnimationFrame(function(timestamp){
-				startTime = timestamp;
+				animationElement = new AnimationElement(frameProvider, runAnimationData, timestamp);
 				step(timestamp)
 			});
 			
