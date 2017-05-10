@@ -1,11 +1,46 @@
-var BoardView = (function()
+class BoardView
 {
-	function BoardView(canvasContextWrapper)
+	constructor(canvasContextWrapper, frameProvider, image)
 	{
 		this.canvasContextWrapper = canvasContextWrapper;
+		this.frameProvider = frameProvider;
+		this.image = image;
+		
+		this.itemsSpriteSheet = 
+		{
+				"magenta": 
+				{
+					"x": 0,
+					"y": 0,
+					"w": 128,
+					"h": 128
+				},
+				"cyan":
+				{
+					"x": 128,
+					"y": 0,
+					"w": 128,
+					"h": 128
+				},
+				"green":
+				{
+					"x": 256,
+					"y": 0,
+					"w": 128,
+					"h": 128
+				},
+				"yellow":
+				{
+					"x": 384,
+					"y": 0,
+					"w": 128,
+					"h": 128
+				}
+
+		}
 	}
 	
-	BoardView.prototype.draw = function(matrix)
+	draw(matrix)
 	{
 		var height = matrix.length;
 		
@@ -22,16 +57,30 @@ var BoardView = (function()
 				var rectangle = item.getRectangle();
 				var color = item.getColor();
 				
-				this.canvasContextWrapper.fillStyle(color.getName());
-
-				this.canvasContextWrapper.fillRect(
-					rectangle.getX(), 
-					rectangle.getY(),
-					rectangle.getWidth(), 
-					rectangle.getHeight());
+				let spriteData = this._getSpriteDataByColorEnum(color);
+				
+				this.canvasContextWrapper.drawImage(this.image, 
+						spriteData.x, spriteData.y, spriteData.w, spriteData.h, 
+						rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
 			}
 		}
-	};
-
-	return BoardView;
-})();
+	}
+	
+	_getSpriteDataByColorEnum(color)
+	{
+		switch(color)
+		{
+			case Color.Red:
+				return this.frameProvider.getFrameByName("magenta", this.itemsSpriteSheet);
+				
+			case Color.Blue:
+				return this.frameProvider.getFrameByName("cyan", this.itemsSpriteSheet);
+				
+			case Color.Green:
+				return this.frameProvider.getFrameByName("green", this.itemsSpriteSheet);
+				
+			case Color.Yellow:
+				return this.frameProvider.getFrameByName("yellow", this.itemsSpriteSheet);	
+		}
+	}
+}

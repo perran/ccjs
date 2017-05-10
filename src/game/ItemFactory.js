@@ -14,7 +14,7 @@ var ItemFactory = (function()
 	
 	ItemFactory.prototype.createRandomNormal = function(x, y, width, height)
 	{
-		var randomColor = this.randomizer.getIntInInterval(0, 2);
+		var randomColor = this.randomizer.getIntInInterval(0, 3);
 		var rectangle = new Rectangle(x, y, width, height);
 		var item = new Item(Color.getEnums()[randomColor], rectangle);
 		return item;

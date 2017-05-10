@@ -6,8 +6,8 @@ class Game
 		this.board;
 		this.selectedItem = null;
 		this.cmi;
-                this._this = this;
-                this.timer;
+        this._this = this;
+        this.timer;
 	}
 	
 	run()
@@ -35,6 +35,10 @@ class Game
 		}
 		*/
 		
+		
+		
+		
+		
 		var canvas = document.getElementById("myCanvas");
 		let eventListener = new EventListener(canvas);
 		this.cmi = new CanvasMouseInteractor(canvas, this, eventListener);
@@ -48,7 +52,11 @@ class Game
 		var canvasContext = canvas.getContext("2d");
 		
 		var canvasContextWrapper = new CanvasContextWrapper(canvasContext);
-		var boardView = new BoardView(canvasContextWrapper);
+		
+		var itemsSpritesheetImage = document.getElementById("items_spritesheet");
+		var frameProvider = new FrameProvider();
+		
+		var boardView = new BoardView(canvasContextWrapper, frameProvider, itemsSpritesheetImage);
 		var pointInShapeDetector = new PointInShapeDetector();
 		
 		this.board = new Board(matrix, 6, 5, boardView, pointInShapeDetector, itemFactory);
@@ -97,7 +105,7 @@ class Game
 			var uniformAtlas=document.getElementById("uniform_atlas");
 			
 			canvasContextWrapper.drawImage(img, 320, 0, 320, 320, 400, 100, 320, 320)
-			let frameProvider = new FrameProvider();
+			
 			var animationElement;
 			
 			let animationSheet = 

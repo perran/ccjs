@@ -1,3 +1,3 @@
 class Color extends BaseEnum{};
 
-Color.createFromArray(['Red', 'Green', 'Blue']);
+Color.createFromArray(['Red', 'Green', 'Blue', 'Yellow']);
