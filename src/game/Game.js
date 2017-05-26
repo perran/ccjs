@@ -8,6 +8,11 @@ class Game
 		this.cmi;
         this._this = this;
         this.timer;
+        this.currentTimestamp = 0;
+        this.tweenManager;
+        this.animationElement;
+        this.canvasContextWrapper;
+        this.uniformAtlas;
 	}
 	
 	run()
@@ -51,12 +56,12 @@ class Game
 		
 		var canvasContext = canvas.getContext("2d");
 		
-		var canvasContextWrapper = new CanvasContextWrapper(canvasContext);
+		this.canvasContextWrapper = new CanvasContextWrapper(canvasContext);
 		
 		var itemsSpritesheetImage = document.getElementById("items_spritesheet");
 		var frameProvider = new FrameProvider();
 		
-		var boardView = new BoardView(canvasContextWrapper, frameProvider, itemsSpritesheetImage);
+		var boardView = new BoardView(this.canvasContextWrapper, frameProvider, itemsSpritesheetImage);
 		var pointInShapeDetector = new PointInShapeDetector();
 		
 		this.board = new Board(matrix, 6, 5, boardView, pointInShapeDetector, itemFactory);
@@ -68,8 +73,8 @@ class Game
 		
 		console.dir("window:\n" + window);
 		var timeParser = new TimeParser();
-			
-		
+		this.tweenManager = new TweenManager();
+				
 		let printText = (textToPrint)=>{
 			let x = 500;
 			let textHeight = 24;
@@ -102,9 +107,9 @@ class Game
 			this.timer.start();
 			
 			var img=document.getElementById("myAtlas");
-			var uniformAtlas=document.getElementById("uniform_atlas");
+			this.uniformAtlas=document.getElementById("uniform_atlas");
 			
-			canvasContextWrapper.drawImage(img, 320, 0, 320, 320, 400, 100, 320, 320)
+			this.canvasContextWrapper.drawImage(img, 320, 0, 320, 320, 400, 100, 320, 320)
 			
 			var animationElement;
 			
@@ -148,20 +153,12 @@ class Game
 		
 			let runAnimationData = animationSheet.data["numbers"];
 						
-			//calls itself over and over
-			function step(timestamp) {
-
-				let ad = animationElement.update(timestamp);
-			  
-				canvasContextWrapper.drawImage(uniformAtlas, ad.x, ad.y, ad.w, ad.h, 750, 200, ad.w, ad.h);
-			  
-				window.requestAnimationFrame(step);
-			}
+			
 
 			//runs once
-			window.requestAnimationFrame(function(timestamp){
-				animationElement = new AnimationElement(frameProvider, runAnimationData, timestamp);
-				step(timestamp)
+			window.requestAnimationFrame((timestamp)=>{
+				this.animationElement = new AnimationElement(frameProvider, runAnimationData, timestamp);
+				this.step(timestamp)
 			});
 			
 			
@@ -169,7 +166,19 @@ class Game
 			
 	}
 		
-	
+	//calls itself over and over
+	step(timestamp) {
+
+		this.currentTimestamp = timestamp;
+		
+		let ad = this.animationElement.update(timestamp);
+	  
+		this.tweenManager.updateAndRemoveCompletedTweens(timestamp);
+		this.canvasContextWrapper.drawImage(this.uniformAtlas, ad.x, ad.y, ad.w, ad.h, 750, 200, ad.w, ad.h);
+	  
+		this.board.draw();
+		window.requestAnimationFrame((timestamp)=>{this.step(timestamp)});
+	}
 	
 	onMouseDown(x, y) 
 	{
@@ -190,12 +199,26 @@ class Game
         
         onMouseMove(x, y)
         {
+        	if(this.tweenManager.hasItems() === true){
+        		return;
+        	}
+        	
             var item = this.board.getItemByCoordinate(x, y);
             if(item !== this.selectedItem)
             {
                 this.board.swap(item, this.selectedItem);
-                this.board.updateItemsPositions();
-                this.board.draw();
+                
+                let selectedItemRectangle = this.selectedItem.getRectangle();
+                let itemRectangle = item.getRectangle();
+                
+                let tweenA = new TweenMove(selectedItemRectangle, itemRectangle.getX(), itemRectangle.getY(), ()=>{console.log("selected touchdown")}, this.currentTimestamp, 1500);
+                let tweenB = new TweenMove(itemRectangle, selectedItemRectangle.getX(), selectedItemRectangle.getY(), ()=>{console.log("item touchdown")}, this.currentTimestamp, 500);
+                
+                this.tweenManager.add(tweenA);
+                this.tweenManager.add(tweenB);
+                
+                //this.board.updateItemsPositions();
+                //this.board.draw();
             }
         }
         

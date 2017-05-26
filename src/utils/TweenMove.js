@@ -34,6 +34,9 @@ class TweenMove
 		if(elapsedPercentage === 1)
 		{
 			this.doneCallback();
+			return true;
 		}
+		
+		return false;
 	}
 }
