@@ -9,24 +9,22 @@ class TweenMove
 		this.startTime = startTime;
 		this.timeToRun = timeToRun;
 		
-	}
+		this.startX = rectangle.getX();
+		this.startY = rectangle.getY();
+		
+		this.distanceX = this.dX - this.startX;
+		this.distanceY = this.dY - this.startY;	}
 	
 	update(currentTime)
 	{
 		let elapsedTime = currentTime - this.startTime;
 		let elapsedPercentage = Math.min((elapsedTime / this.timeToRun), 1);
-
-		let sX = this.rectangle.getX();
-		let sY = this.rectangle.getY();
+				
+		let deltaDistanceX = (this.distanceX * elapsedPercentage); 
+		let deltaDistanceY = (this.distanceY * elapsedPercentage);
 		
-		let distanceX = this.dX - sX;
-		let distanceY = this.dY - sY;
-		
-		let deltaDistanceX = (distanceX * elapsedPercentage); 
-		let deltaDistanceY = (distanceY * elapsedPercentage);
-		
-		let newX = sX + deltaDistanceX;
-		let newY = sY + deltaDistanceY;
+		let newX = this.startX + deltaDistanceX;
+		let newY = this.startY + deltaDistanceY;
 		
 		this.rectangle.setX(newX);
 		this.rectangle.setY(newY);
@@ -38,5 +36,6 @@ class TweenMove
 		}
 		
 		return false;
-	}
+		
+	}	
 }

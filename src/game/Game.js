@@ -211,7 +211,7 @@ class Game
                 let selectedItemRectangle = this.selectedItem.getRectangle();
                 let itemRectangle = item.getRectangle();
                 
-                let tweenA = new TweenMove(selectedItemRectangle, itemRectangle.getX(), itemRectangle.getY(), ()=>{console.log("selected touchdown")}, this.currentTimestamp, 1500);
+                let tweenA = new TweenMove(selectedItemRectangle, itemRectangle.getX(), itemRectangle.getY(), ()=>{console.log("selected touchdown")}, this.currentTimestamp, 4500);
                 let tweenB = new TweenMove(itemRectangle, selectedItemRectangle.getX(), selectedItemRectangle.getY(), ()=>{console.log("item touchdown")}, this.currentTimestamp, 500);
                 
                 this.tweenManager.add(tweenA);
