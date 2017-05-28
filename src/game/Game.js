@@ -9,7 +9,7 @@ class Game
         this._this = this;
         this.timer;
         this.currentTimestamp = 0;
-        this.tweenManager;
+        this.tweenObjectManager;
         this.animationElement;
         this.vanishAnimationElement;
         this.canvasContextWrapper;
@@ -77,7 +77,7 @@ class Game
 		
 		console.dir("window:\n" + window);
 		var timeParser = new TimeParser();
-		this.tweenManager = new TweenManager();
+		this.tweenObjectManager = new TweenObjectManager();
 				
 		let printText = (textToPrint)=>{
 			let x = 500;
@@ -248,7 +248,7 @@ class Game
 		let ad = this.animationElement.update(timestamp);
 		let vad = this.vanishAnimationElement.update(timestamp);
 	  
-		this.tweenManager.updateAndRemoveCompletedTweens(timestamp);
+		this.tweenObjectManager.updateAndRemoveCompletedTweenObjects(timestamp);
 		this.canvasContextWrapper.drawImage(this.uniformAtlas, ad.x, ad.y, ad.w, ad.h, 750, 200, ad.w, ad.h);
 		this.canvasContextWrapper.drawImage(this.itemsVanishNormalSpritesheet, vad.x, vad.y, vad.w, vad.h, 750, 600, vad.w, vad.h);
 	  
@@ -275,7 +275,7 @@ class Game
         
         onMouseMove(x, y)
         {
-        	if(this.tweenManager.hasItems() === true){
+        	if(this.tweenObjectManager.hasItems() === true){
         		return;
         	}
         	
@@ -290,8 +290,12 @@ class Game
                 let tweenA = new TweenMove(selectedItemRectangle, itemRectangle.getX(), itemRectangle.getY(), ()=>{console.log("selected touchdown")}, this.currentTimestamp, 200);
                 let tweenB = new TweenMove(itemRectangle, selectedItemRectangle.getX(), selectedItemRectangle.getY(), ()=>{console.log("item touchdown")}, this.currentTimestamp, 200);
                 
-                this.tweenManager.add(tweenA);
-                this.tweenManager.add(tweenB);
+                let queueHelper = new TweenObjectManager();
+                queueHelper.add(tweenA);
+                queueHelper.add(tweenB);
+                
+                let tweenQueue = new TweenQueue(queueHelper, ()=>{console.log("queue done!")});
+                this.tweenObjectManager.add(tweenQueue);
                 
                 //this.board.updateItemsPositions();
                 //this.board.draw();

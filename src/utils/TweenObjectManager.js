@@ -1,21 +1,21 @@
-class TweenManager
+class TweenObjectManager
 {
 	constructor()
 	{
-		this.tweens = [];
+		this.tweenObjects = [];
 		this.toBeRemoved = [];
 	}
 	
-	updateAndRemoveCompletedTweens(timestamp)
+	updateAndRemoveCompletedTweenObjects(timestamp)
 	{
 		this._update(timestamp);
 		this._removeCompleted();
 	}
 	
 	_update(timestamp){
-		for(let i=0; i<this.tweens.length; i++)
+		for(let i=0; i<this.tweenObjects.length; i++)
 		{
-			let tween = this.tweens[i];
+			let tween = this.tweenObjects[i];
 			let completed = tween.update(timestamp);
 			
 			if(completed === true)
@@ -32,25 +32,25 @@ class TweenManager
 		{
 			let elementToBeRemoved = this.toBeRemoved[i];
 			
-			let numberOfElements = this.tweens.length;
+			let numberOfElements = this.tweenObjects.length;
 			
 			for(let j=0; j<numberOfElements; j++)
 			{
-				let currentElement = this.tweens[j];
+				let currentElement = this.tweenObjects[j];
 				if (currentElement === elementToBeRemoved)
 				{
-					this.tweens.splice(j, 1);
+					this.tweenObjects.splice(j, 1);
 				}
 			}
 		}
 	}
 	
-	add(tween){
-		this.tweens.push(tween);
+	add(tweenObject){
+		this.tweenObjects.push(tweenObject);
 	}
-	
+		
 	hasItems()
 	{
-		return this.tweens.length > 0;
+		return this.tweenObjects.length > 0;
 	}
 }
