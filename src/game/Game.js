@@ -11,8 +11,10 @@ class Game
         this.currentTimestamp = 0;
         this.tweenManager;
         this.animationElement;
+        this.vanishAnimationElement;
         this.canvasContextWrapper;
         this.uniformAtlas;
+        this.itemsVanishNormalSpritesheet;
 	}
 	
 	run()
@@ -59,6 +61,8 @@ class Game
 		this.canvasContextWrapper = new CanvasContextWrapper(canvasContext);
 		
 		var itemsSpritesheetImage = document.getElementById("items_spritesheet");
+		this.itemsVanishNormalSpritesheet = document.getElementById("items_vanish_normal_spritesheet");
+		
 		var frameProvider = new FrameProvider();
 		
 		var boardView = new BoardView(this.canvasContextWrapper, frameProvider, itemsSpritesheetImage);
@@ -150,6 +154,72 @@ class Game
 					}
 				}
 			}
+			
+			let vanishAnimationSheet = 
+			{
+				"data": 
+				{
+					"time": 750,
+					"frames": 
+					[
+						{
+							"x": 0,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						},
+						{
+							"x": 128,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						},
+						{
+							"x": 256,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						},
+						{
+							"x": 384,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						},
+						{
+							"x": 384,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						},
+						{
+							"x": 512,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						},
+						{
+							"x": 640,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						},
+						{
+							"x": 768,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						},
+						{
+							"x": 896,
+							"y": 0,
+							"w": 128,
+							"h": 128
+						}
+					]
+
+				}
+			}
 		
 			let runAnimationData = animationSheet.data["numbers"];
 						
@@ -157,6 +227,7 @@ class Game
 
 			//runs once
 			window.requestAnimationFrame((timestamp)=>{
+				this.vanishAnimationElement = new AnimationElement(frameProvider, vanishAnimationSheet.data, timestamp);
 				this.animationElement = new AnimationElement(frameProvider, runAnimationData, timestamp);
 				this.step(timestamp)
 			});
@@ -169,12 +240,17 @@ class Game
 	//calls itself over and over
 	step(timestamp) {
 
+		this.canvasContextWrapper.clearRect(0, 0, 1000, 800);
+
+		
 		this.currentTimestamp = timestamp;
 		
 		let ad = this.animationElement.update(timestamp);
+		let vad = this.vanishAnimationElement.update(timestamp);
 	  
 		this.tweenManager.updateAndRemoveCompletedTweens(timestamp);
 		this.canvasContextWrapper.drawImage(this.uniformAtlas, ad.x, ad.y, ad.w, ad.h, 750, 200, ad.w, ad.h);
+		this.canvasContextWrapper.drawImage(this.itemsVanishNormalSpritesheet, vad.x, vad.y, vad.w, vad.h, 750, 600, vad.w, vad.h);
 	  
 		this.board.draw();
 		window.requestAnimationFrame((timestamp)=>{this.step(timestamp)});
@@ -211,8 +287,8 @@ class Game
                 let selectedItemRectangle = this.selectedItem.getRectangle();
                 let itemRectangle = item.getRectangle();
                 
-                let tweenA = new TweenMove(selectedItemRectangle, itemRectangle.getX(), itemRectangle.getY(), ()=>{console.log("selected touchdown")}, this.currentTimestamp, 4500);
-                let tweenB = new TweenMove(itemRectangle, selectedItemRectangle.getX(), selectedItemRectangle.getY(), ()=>{console.log("item touchdown")}, this.currentTimestamp, 500);
+                let tweenA = new TweenMove(selectedItemRectangle, itemRectangle.getX(), itemRectangle.getY(), ()=>{console.log("selected touchdown")}, this.currentTimestamp, 200);
+                let tweenB = new TweenMove(itemRectangle, selectedItemRectangle.getX(), selectedItemRectangle.getY(), ()=>{console.log("item touchdown")}, this.currentTimestamp, 200);
                 
                 this.tweenManager.add(tweenA);
                 this.tweenManager.add(tweenB);

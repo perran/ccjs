@@ -43,9 +43,7 @@ class BoardView
 	draw(matrix)
 	{
 		var height = matrix.length;
-		
-		this.canvasContextWrapper.clearRect(0, 0, 800, 600);
-		
+			
 		for(var y = 0; y < height; y++)
 		{
 			var row = matrix[y];
