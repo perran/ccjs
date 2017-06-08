@@ -25,7 +25,7 @@ describe("Judge", function()
 	
 	describe("when match 3", function(){
 		
-		let c0 = createColumn([Color.Red, Color.Red, Color.Red, Color.Green, Color.Green, Color.Blue]);
+		let c0 = createColumn([Color.Red, Color.Red, Color.Red, Color.Red, Color.Green, Color.Blue]);
 		let c1 = createColumn([Color.Blue, Color.Red, Color.Red, Color.Red, Color.Green, Color.Green]);
 		let c2 = createColumn([Color.Blue, Color.Green, Color.Red, Color.Red, Color.Red, Color.Green]);
 		let c3 = createColumn([Color.Blue, Color.Green, Color.Green, Color.Red, Color.Red, Color.Red]);
