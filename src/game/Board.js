@@ -1,6 +1,6 @@
-var Board = (function()
+class Board
 {
-	function Board(matrix, width, height, boardView, pointInShapeDetector, itemFactory)
+	constructor(matrix, width, height, boardView, pointInShapeDetector, itemFactory)
 	{
 		this.matrix = matrix;
 		this.width = width;
@@ -10,7 +10,7 @@ var Board = (function()
 		this.itemFactory = itemFactory;
 	}
 	
-	Board.prototype.getItemByCoordinate = function(px, py)
+	getItemByCoordinate(px, py)
 	{
 		var width = this.matrix.length;
 
@@ -34,9 +34,9 @@ var Board = (function()
 		}
 		
 		return null;
-	};
+	}
 	
-	Board.prototype.removeItem = function(itemToRemove)
+	removeItem(itemToRemove)
 	{
 		var width = this.matrix.length;
 
@@ -51,9 +51,9 @@ var Board = (function()
 					return;
 			}
 		}
-	};
+	}
 	
-	Board.prototype.refill = function()
+	refill()
 	{		
 		var width = this.matrix.length;
 	
@@ -72,9 +72,9 @@ var Board = (function()
 				column.unshift(item);
 			}
 		}
-	};
+	}
 	
-	Board.prototype.updateItemsPositions = function()
+	updateItemsPositions()
 	{
 		var width = this.matrix.length;
 	
@@ -92,7 +92,7 @@ var Board = (function()
 		}
 	}
 	
-	Board.prototype.swap = function(itemA, itemB)
+	swap(itemA, itemB)
 	{
 		var posA = this.find(itemA);
 		var posB = this.find(itemB);	
@@ -101,7 +101,7 @@ var Board = (function()
 		this.matrix[posB.px][posB.py] = itemA;
 	}
 	
-	Board.prototype.find = function(item)
+	find(item)
 	{
 		var width = this.matrix.length;
 
@@ -118,12 +118,12 @@ var Board = (function()
 	}
 	
 	
-	Board.prototype.draw = function()
+	draw()
 	{
 		this.boardView.draw(this.matrix);
-	};
+	}
 	
-	Board.prototype.print = function()
+	print()
 	{
 		var toPrint = "";
 		var height = this.matrix.length;
@@ -142,7 +142,10 @@ var Board = (function()
 		}
 		
 		return toPrint;
-	};
+	}
 	
-	return Board;
-})();
+	getMatrix()
+	{
+		return this.matrix;
+	}
+}
