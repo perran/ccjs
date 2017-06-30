@@ -1,17 +1,10 @@
-describe("Judge", function()
+describe("MatcherRules", function()
 {
-	let judge;
+	let matcherRules;
 
 	beforeEach(function(){
-		judge = new Judge();
+		matcherRules = new MatcherRules();
 	});
-
-	//get match max N
-	//collect those matches
-	//get all unique elements from those matches
-	//use these ignore matches where less than current N are included
-	//collect those new matches where not all where ignored
-	//continue to lowest match
 	
 	let createColumn = function(colorArray){
 		let arr = [];
@@ -35,7 +28,7 @@ describe("Judge", function()
 		
 		it("should return all vertical combinations", function(){
 		
-			let combos = judge.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Red, 3);
+			let combos = matcherRules.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Red, 3);
 			
             expect(combos.length).toBe(4);
             expect(combos[0][0]).toBe(c0[0]);
@@ -45,7 +38,7 @@ describe("Judge", function()
 		
 		it("should return all horizontal combinations", function(){
 			
-			let combos = judge.getHorizontalCombinations(matrix, function(item){return item.getColor()}, Color.Red, 3);
+			let combos = matcherRules.getHorizontalCombinations(matrix, function(item){return item.getColor()}, Color.Red, 3);
 			
             expect(combos.length).toBe(2);
             expect(combos[0][0]).toBe(c0[2]);

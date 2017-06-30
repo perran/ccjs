@@ -1,6 +1,6 @@
 class Board
 {
-	constructor(matrix, width, height, boardView, pointInShapeDetector, itemFactory)
+	constructor(matrix, width, height, boardView, pointInShapeDetector, itemFactory, tweenObjectManager, judge, gameTime)
 	{
 		this.matrix = matrix;
 		this.width = width;
@@ -8,6 +8,9 @@ class Board
 		this.boardView = boardView;
 		this.pointInShapeDetector = pointInShapeDetector;
 		this.itemFactory = itemFactory;
+		this.tweenObjectManager = tweenObjectManager;
+		this.judge = judge;
+		this.gameTime = gameTime;
 	}
 	
 	getItemByCoordinate(px, py)
@@ -72,6 +75,87 @@ class Board
 				column.unshift(item);
 			}
 		}
+	}
+	
+	/*
+	 
+	 //swap with callback
+	 	//check matches
+	 		//false: swap back
+			<---------- wait for new input
+			
+			//true
+				 //remove all matches
+				 //run remove animations
+				 	//calculate positions for where all items should go to get the next stable state of the board
+				 	//create new items to fill remaining gaps and place them so they can fall in
+				 	//move all items down to fill their calculated positions (gaps)
+				 		//repeat all steps after true until no more matches
+				 		
+				 	
+	 
+	 */
+	
+	swap2(itemA, itemB, successCallback, failCallback)
+	{
+		let queueHelper = this.swapAndcreateVisualSwapQueue(itemA, itemB);
+
+        let tweenQueue = new TweenQueue(queueHelper, ()=>
+        {    	
+        	let matches = this.judge.matchLines(this.getMatrix());
+        	console.log("matches matches matches", matches);
+
+        	if(matches.length > 0)
+    		{
+        		
+        		successCallback();
+    			//success
+        		/*for(let i = 0; i < matches.length; i++)
+            	{
+    				for(let j = 0; j < matches[i].length; j++)
+    				{
+    					this.board.removeItem(matches[i][j]);
+    				}
+    			}*/
+    		}
+    		else
+    		{
+
+    			let swapBackQueueHelper = this.swapAndcreateVisualSwapQueue(itemA, itemB);
+    			let tweenQueue = new TweenQueue(swapBackQueueHelper, ()=>
+    			{
+    				failCallback();
+    			});
+    	        this.tweenObjectManager.add(tweenQueue);
+    		}
+        	
+        	
+        	
+        	
+        	
+        	this.selectedItem = null;
+        });
+        
+        this.tweenObjectManager.add(tweenQueue);
+        //yeah!
+	}
+	
+	swapAndcreateVisualSwapQueue(itemA, itemB)
+	{
+		this.swap(itemA, itemB);
+		
+		//clean this mess
+		let selectedItemRectangle = itemA.getRectangle();
+        let itemRectangle = itemB.getRectangle();
+		let currentTimestamp = this.gameTime.getCurrentTime();
+		let tweenA = new TweenMove(selectedItemRectangle, itemRectangle.getX(), itemRectangle.getY(), ()=>{console.log("touchdown", itemA)}, currentTimestamp, 200);
+        let tweenB = new TweenMove(itemRectangle, selectedItemRectangle.getX(), selectedItemRectangle.getY(), ()=>{console.log("touchdown", itemB)}, currentTimestamp, 200);
+        
+        let queueHelper = new TweenObjectManager();
+        queueHelper.add(tweenA);
+        queueHelper.add(tweenB);
+        
+        return queueHelper;
 	}
 	
 	updateItemsPositions()

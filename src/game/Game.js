@@ -15,6 +15,8 @@ class Game
         this.canvasContextWrapper;
         this.uniformAtlas;
         this.itemsVanishNormalSpritesheet;
+        this.judge;
+        this.gameTime;
 	}
 	
 	run()
@@ -42,7 +44,8 @@ class Game
 		}
 		*/
 		
-		
+		let matcherRules = new MatcherRules();
+		this.judge = new Judge(matcherRules);
 		
 		
 		
@@ -67,9 +70,33 @@ class Game
 		
 		var boardView = new BoardView(this.canvasContextWrapper, frameProvider, itemsSpritesheetImage);
 		var pointInShapeDetector = new PointInShapeDetector();
+
+		this.tweenObjectManager = new TweenObjectManager();
 		
-		this.board = new Board(matrix, 6, 5, boardView, pointInShapeDetector, itemFactory);
-		this.board.refill();
+		this.gameTime = new GameTime();
+		this.board = new Board(matrix, 6, 5, boardView, pointInShapeDetector, itemFactory, this.tweenObjectManager, this.judge, this.gameTime);
+		
+		let matches = [];
+		
+		do{
+			
+			for(let i = 0; i < matches.length; i++){
+				for(let j = 0; j < matches[i].length; j++){
+					this.board.removeItem(matches[i][j]);
+				}
+			}
+				
+			this.board.refill();
+			
+			matches = this.judge.matchLines(matrix);
+			console.log("matches", matches);
+			//let blues = judge.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Blue, 3);
+			//let green = judge.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Green, 3);
+
+			
+			
+		}while(matches.length > 0)
+		
 		this.board.updateItemsPositions();
 		this.board.draw();
 		
@@ -77,7 +104,6 @@ class Game
 		
 		console.dir("window:\n" + window);
 		var timeParser = new TimeParser();
-		this.tweenObjectManager = new TweenObjectManager();
 				
 		let printText = (textToPrint)=>{
 			let x = 500;
@@ -244,6 +270,7 @@ class Game
 
 		
 		this.currentTimestamp = timestamp;
+		this.gameTime.setCurrentTime(timestamp);
 		
 		let ad = this.animationElement.update(timestamp);
 		let vad = this.vanishAnimationElement.update(timestamp);
@@ -280,25 +307,18 @@ class Game
         	}
         	
             var item = this.board.getItemByCoordinate(x, y);
-            if(item !== this.selectedItem)
+            console.log("item", item);
+            if((item !== this.selectedItem) && (this.selectedItem !== null))
             {
-                this.board.swap(item, this.selectedItem);
-                
-                let selectedItemRectangle = this.selectedItem.getRectangle();
-                let itemRectangle = item.getRectangle();
-                
-                let tweenA = new TweenMove(selectedItemRectangle, itemRectangle.getX(), itemRectangle.getY(), ()=>{console.log("selected touchdown")}, this.currentTimestamp, 200);
-                let tweenB = new TweenMove(itemRectangle, selectedItemRectangle.getX(), selectedItemRectangle.getY(), ()=>{console.log("item touchdown")}, this.currentTimestamp, 200);
-                
-                let queueHelper = new TweenObjectManager();
-                queueHelper.add(tweenA);
-                queueHelper.add(tweenB);
-                
-                let tweenQueue = new TweenQueue(queueHelper, ()=>{console.log("queue done!")});
-                this.tweenObjectManager.add(tweenQueue);
-                
-                //this.board.updateItemsPositions();
-                //this.board.draw();
+                this.board.swap2(item, this.selectedItem,
+                		()=>{
+                			console.log("sucess swap!");
+                        	this.selectedItem = null;	
+                			}, 
+            			()=>{
+		                	console.log("fail swap");
+		                	this.selectedItem = null;	
+            	});
             }
         }
         
