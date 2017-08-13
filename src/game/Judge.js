@@ -7,13 +7,27 @@ class Judge
 	
 	matchLines(matrix)
 	{
-		let verticalMatches = this.matcherRules.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Red, 3);
-		let horizontalMatches = this.matcherRules.getHorizontalCombinations(matrix, function(item){return item.getColor()}, Color.Red, 3);
+		let colors = [Color.Red, Color.Green, Color.Blue, Color.Yellow];
+		//let sizes = 
 		
+		let totalMatches = [];
 		
+		for(let i in colors)
+		{
+			let color = colors[i];
+			let matches = this._matchLineLineOfColorBySize(matrix, color, 3);
+
+			totalMatches = totalMatches.concat(matches);
+		}
+
+		return totalMatches;
+	}
+	
+	_matchLineLineOfColorBySize(matrix, color, size)
+	{
+		let verticalMatches = this.matcherRules.getVerticalCombinations(matrix, function(item){return item.getColor()}, color, size);
+		let horizontalMatches = this.matcherRules.getHorizontalCombinations(matrix, function(item){return item.getColor()}, color, size);
 		let totalMatches = verticalMatches.concat(horizontalMatches);
-		console.log("totalMatches", totalMatches)
-		
 		return totalMatches;
 	}
 }

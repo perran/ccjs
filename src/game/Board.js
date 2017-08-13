@@ -11,6 +11,7 @@ class Board
 		this.tweenObjectManager = tweenObjectManager;
 		this.judge = judge;
 		this.gameTime = gameTime;
+		this.itemSize = 90;
 	}
 	
 	getItemByCoordinate(px, py)
@@ -37,6 +38,15 @@ class Board
 		}
 		
 		return null;
+	}
+	
+	removeItems(itemsToRemove)
+	{
+		let length = itemsToRemove.length;
+		for(var i = 0; i < length; i++)
+		{
+			this.removeItem(itemsToRemove[i]);
+		}
 	}
 	
 	removeItem(itemToRemove)
@@ -68,33 +78,13 @@ class Board
 			
 			for(var y = 0; y < differenceInHeight; y++)
 			{
-				var itemSize = 90;
-				var item = this.itemFactory.createRandomNormal(x * itemSize, 
-					y * itemSize, itemSize, itemSize);
+				var item = this.itemFactory.createRandomNormal(x * this.itemSize, 
+					(-y - 1) * this.itemSize, this.itemSize, this.itemSize);
 				
-				column.unshift(item);
+				column.push(item);
 			}
 		}
 	}
-	
-	/*
-	 
-	 //swap with callback
-	 	//check matches
-	 		//false: swap back
-			<---------- wait for new input
-			
-			//true
-				 //remove all matches
-				 //run remove animations
-				 	//calculate positions for where all items should go to get the next stable state of the board
-				 	//create new items to fill remaining gaps and place them so they can fall in
-				 	//move all items down to fill their calculated positions (gaps)
-				 		//repeat all steps after true until no more matches
-				 		
-				 	
-	 
-	 */
 	
 	swap2(itemA, itemB, successCallback, failCallback)
 	{
@@ -103,20 +93,10 @@ class Board
         let tweenQueue = new TweenQueue(queueHelper, ()=>
         {    	
         	let matches = this.judge.matchLines(this.getMatrix());
-        	console.log("matches matches matches", matches);
 
         	if(matches.length > 0)
     		{
-        		
-        		successCallback();
-    			//success
-        		/*for(let i = 0; i < matches.length; i++)
-            	{
-    				for(let j = 0; j < matches[i].length; j++)
-    				{
-    					this.board.removeItem(matches[i][j]);
-    				}
-    			}*/
+        		this.clearMatchesAndStartTween(successCallback);   		
     		}
     		else
     		{
@@ -127,17 +107,56 @@ class Board
     				failCallback();
     			});
     	        this.tweenObjectManager.add(tweenQueue);
-    		}
-        	
-        	
-        	
-        	
-        	
-        	this.selectedItem = null;
+    		}        	
         });
         
         this.tweenObjectManager.add(tweenQueue);
         //yeah!
+	}
+	
+	clearMatchesAndStartTween(successCallback){
+		let matches = this.judge.matchLines(this.getMatrix());
+
+    	if(matches.length > 0)
+		{
+    		for(let i = 0; i < matches.length; i++)
+        	{
+				for(let j = 0; j < matches[i].length; j++)
+				{
+					this.removeItem(matches[i][j]);
+				}
+			}
+    		
+    		this.repositionWithTweens(() => {
+    			this.refill();
+    			this.repositionWithTweens(() => {
+    				this.clearMatchesAndStartTween(successCallback);
+    			})
+    		});     		
+		}
+    	else{
+    		successCallback();
+    	}    	
+	}
+	
+	
+	
+	repositionWithTweens(successCallback)
+	{
+		let positions = this.getItemsLogicalPositions()
+		let currentTimestamp = this.gameTime.getCurrentTime();
+        let queueHelper = new TweenObjectManager();
+		
+        positions.forEach((value, key, map)=> 
+        {
+			let itemRectangle = key.getRectangle();
+			let tween = new TweenMove(itemRectangle, value[0], value[1], ()=>{console.log("refill in place", key)}, currentTimestamp, 300);
+	        queueHelper.add(tween);
+		})
+		
+		let tweenQueue = new TweenQueue(queueHelper, successCallback);
+		
+        this.tweenObjectManager.add(tweenQueue); 
 	}
 	
 	swapAndcreateVisualSwapQueue(itemA, itemB)
@@ -157,6 +176,59 @@ class Board
         
         return queueHelper;
 	}
+		
+	getCurrentPositions()
+	{
+		var width = this.matrix.length;
+		let map = new Map();
+		
+		for(var x = 0; x < width; x++)
+		{
+			var column = this.matrix[x];
+			let yLength = column.length;
+						
+			for(var y = 0; y < yLength ; y++)
+			{
+				let item = column[y];
+				let rectangle = item.getRectangle();
+				map.set(item, [rectangle.getX(), rectangle.getY()]);
+			}
+		}
+		
+		return map;
+	}
+	
+	
+	getItemsLogicalPositions()
+	{
+		var width = this.matrix.length;
+		let map = new Map();
+
+		for(var x = 0; x < width; x++)
+		{
+			var column = this.matrix[x];
+
+			let yLength = column.length;
+			
+			for(var y = 0; y < yLength; y++)
+			{
+				let yPositionModifier = this.height - 1 - y;
+				let xPosition = x*this.itemSize;
+				let yPosition = yPositionModifier*this.itemSize;
+				
+				map.set(column[y], [xPosition, yPosition]);
+			}
+		}
+		
+		return map;
+	}
+	
+	loopio(itemsToRemove)
+	{
+		let currentPositions = this.getItemsLogicalPositions();
+		this.removeItems(itemsToRemove);
+		
+	}
 	
 	updateItemsPositions()
 	{
@@ -165,13 +237,15 @@ class Board
 		for(var x = 0; x < width; x++)
 		{
 			var column = this.matrix[x];
+			let yLength = column.length;
 						
-			for(var y = 0; y < column.length; y++)
+			for(var y = 0; y < yLength ; y++)
 			{
-				var itemSize = 90;
 				var itemRectangle = column[y].getRectangle();
-				itemRectangle.setX(x*itemSize);
-				itemRectangle.setY(y*itemSize);
+				let yPositionModifier = this.height - 1 - y;
+
+				itemRectangle.setX(x*this.itemSize);
+				itemRectangle.setY(yPositionModifier*this.itemSize);
 			}
 		}
 	}

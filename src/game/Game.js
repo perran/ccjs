@@ -89,7 +89,7 @@ class Game
 			this.board.refill();
 			
 			matches = this.judge.matchLines(matrix);
-			console.log("matches", matches);
+
 			//let blues = judge.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Blue, 3);
 			//let green = judge.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Green, 3);
 
@@ -100,9 +100,6 @@ class Game
 		this.board.updateItemsPositions();
 		this.board.draw();
 		
-		console.log("board:\n" + this.board.print());
-		
-		console.dir("window:\n" + window);
 		var timeParser = new TimeParser();
 				
 		let printText = (textToPrint)=>{
@@ -307,7 +304,6 @@ class Game
         	}
         	
             var item = this.board.getItemByCoordinate(x, y);
-            console.log("item", item);
             if((item !== this.selectedItem) && (this.selectedItem !== null))
             {
                 this.board.swap2(item, this.selectedItem,
