@@ -4,7 +4,7 @@ class MatcherRules
 	{
 	}
 	
-	getVerticalCombinations(matrix, compareFunction, compareTo, size)
+	getVerticalCombinations(matrix, compareFunction, compareTo, minSize)
 	{
 		let matches = [];
 		let width = matrix.length;
@@ -13,71 +13,64 @@ class MatcherRules
 		{
 			let column = matrix[x];
 			let height = column.length;
-			let neededHeight = height - (size-1);
 			
-			for(let y = 0; y < neededHeight; y++)
+			let combo = [];
+			
+			for(let y = 0; y < height; y++)
 			{
-				let combo = [];
-				
-				for(let yy = 0; yy < size; yy++)
+				const currentItem = column[y];
+				const currentComparer = compareFunction(currentItem);
+				const match = (currentComparer === compareTo);
+
+				if(match)
 				{
-					let currentItem = column[y+yy];
-					let currentComparer = compareFunction(currentItem);
-					
-					if(currentComparer === compareTo)
-					{
-						combo.push(currentItem);
-					}
-					else
-					{
-						break;
-					}
+					combo.push(currentItem);
 				}
 				
-				if(combo.length === size)
+				if(!match || y === (height - 1))
 				{
-					matches.push(combo);
-					y += (size - 1);
+					const comboLength = combo.length;
+					if(comboLength >= minSize)
+					{
+						matches.push(combo);	
+					}
+
+					combo = [];
 				}
 			}
 		}
-		
 		return matches;
 	}
 	
-	getHorizontalCombinations(matrix, compareFunction, compareTo, size)
+	getHorizontalCombinations(matrix, compareFunction, compareTo, minSize)
 	{
 		let matches = [];
 		let height = matrix[0].length;
+		let width = matrix.length;
 		
 		for(let y = 0; y < height; y++)
 		{
-			let width = matrix.length;
-			let neededWidth = width - (size - 1);
+			let combo = [];
 			
-			for(let x = 0; x < neededWidth; x++)
-			{
-				let combo = [];
-				
-				for(let xx = 0; xx < size; xx++)
-				{
-					let currentItem = matrix[x+xx][y];
-					let currentComparer = compareFunction(currentItem);
+			for(let x = 0; x < width; x++)
+			{				
+				let currentItem = matrix[x][y];
+				let currentComparer = compareFunction(currentItem);
+				const match = (currentComparer === compareTo);
 
-					if(currentComparer === compareTo)
-					{
-						combo.push(currentItem);
-					}
-					else
-					{
-						break;
-					}
-				}
-				
-				if(combo.length === size)
+				if(match)
 				{
-					matches.push(combo);
-					x += (size - 1);
+					combo.push(currentItem);
+				}
+				if(!match || x === (width - 1))
+				{
+					const comboLength = combo.length;
+					if(comboLength >= minSize)
+					{
+						matches.push(combo);
+					}
+
+					combo = [];
 				}
 			}
 		}

@@ -8,7 +8,6 @@ class Judge
 	matchLines(matrix)
 	{
 		let colors = [Color.Red, Color.Green, Color.Blue, Color.Yellow];
-		//let sizes = 
 		
 		let totalMatches = [];
 		
