@@ -1,6 +1,6 @@
 class Board
 {
-	constructor(matrix, width, height, boardView, pointInShapeDetector, itemFactory, tweenObjectManager, judge, gameTime)
+	constructor(matrix, width, height, boardView, pointInShapeDetector, itemFactory, tweenObjectManager, judge, gameTime, animationsManager, frameProvider, vanishAnimationSheet)
 	{
 		this.matrix = matrix;
 		this.width = width;
@@ -12,6 +12,9 @@ class Board
 		this.judge = judge;
 		this.gameTime = gameTime;
 		this.itemSize = 90;
+		this.animationsManager = animationsManager;
+		this.frameProvider = frameProvider;
+		this.vanishAnimationSheet = vanishAnimationSheet;
 	}
 	
 	getItemByCoordinate(px, py)
@@ -119,26 +122,43 @@ class Board
 
     	if(matches.length > 0)
 		{
+			const animationElements = [];
     		for(let i = 0; i < matches.length; i++)
         	{
 				for(let j = 0; j < matches[i].length; j++)
 				{
-					this.removeItem(matches[i][j]);
+					const itemToRemove = matches[i][j];
+					this.removeItem(itemToRemove);
+
+					//TODO: add remove animations
+					const itemToRemoveRectangle = itemToRemove.getRectangle();
+					const removeAnimationElement = new AnimationElementPlayOnce(
+						this.frameProvider, 
+						this.vanishAnimationSheet.data,
+						this.gameTime.getCurrentTime(),
+						itemToRemoveRectangle.getX(),
+						itemToRemoveRectangle.getY()
+					);
+					animationElements.push(removeAnimationElement);
 				}
 			}
-    		
-    		this.repositionWithTweens(() => {
-    			this.refill();
-    			this.repositionWithTweens(() => {
-    				this.clearMatchesAndStartTween(successCallback);
-    			})
-    		});     		
+
+			const animationQueue = new AnimationQueue(animationElements, () => {this.doThisAfterAnimationCallback(successCallback)});
+			this.animationsManager.add(animationQueue);		
 		}
     	else{
     		successCallback();
     	}    	
 	}
-	
+	//TODO: Rename this method :D
+	doThisAfterAnimationCallback(successCallback){
+		this.repositionWithTweens(() => {
+			this.refill();
+			this.repositionWithTweens(() => {
+				this.clearMatchesAndStartTween(successCallback);
+			})
+		});
+	}
 	
 	
 	repositionWithTweens(successCallback)

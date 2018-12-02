@@ -1,4 +1,4 @@
-class AnimationElement{
+export class AnimationElementPlayContinuously{
 	constructor(frameProvider, animationData, startTime){
 		this.frameProvider = frameProvider;
 		this.animationData = animationData;

@@ -16,7 +16,9 @@ class Game
         this.uniformAtlas;
         this.itemsVanishNormalSpritesheet;
         this.judge;
-        this.gameTime;
+		this.gameTime;
+		this.removeAnimationElements = [];
+		this.animationsManager;
 	}
 	
 	run()
@@ -24,26 +26,11 @@ class Game
 		let randomWrapper = new RandomWrapper();
 		var randomizer = new Randomizer(randomWrapper);
 		var itemFactory = new ItemFactory(randomizer);
-		var ITEM_SIZE = 90;
 		
 		var matrix = 	[
 							[],[],[],[],[],[]
 						]
-		/*
-		for(var y = 0; y < 6; y++)
-		{
-			var row = matrix[y];
-			for(var x = 0; x < 5; x++)
-			{
-				var randomColor = randomizer.getIntInInterval(0, 2);
-				var item = itemFactory.create(Color[Color[randomColor]], x * ITEM_SIZE, 
-					y * ITEM_SIZE, ITEM_SIZE, ITEM_SIZE);
-				
-				row.push(item);
-			}
-		}
-		*/
-		
+
 		let matcherRules = new MatcherRules();
 		this.judge = new Judge(matcherRules);
 		
@@ -72,30 +59,96 @@ class Game
 		var pointInShapeDetector = new PointInShapeDetector();
 
 		this.tweenObjectManager = new TweenObjectManager();
+		this.animationsManager = new AnimationsManager();
 		
 		this.gameTime = new GameTime();
-		this.board = new Board(matrix, 6, 5, boardView, pointInShapeDetector, itemFactory, this.tweenObjectManager, this.judge, this.gameTime);
 		
+		let vanishAnimationSheet = 
+		{
+			"data": 
+			{
+				"time": 250,
+				"frames": 
+				[
+					{
+						"x": 0,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					{
+						"x": 128,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					{
+						"x": 256,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					{
+						"x": 384,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					{
+						"x": 384,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					{
+						"x": 512,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					{
+						"x": 640,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					{
+						"x": 768,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					},
+					{
+						"x": 896,
+						"y": 0,
+						"w": 128,
+						"h": 128
+					}
+				]
+
+			}
+		}
+
+		this.board = new Board(matrix, 6, 5, boardView, pointInShapeDetector, itemFactory, this.tweenObjectManager, this.judge,
+			this.gameTime, this.animationsManager, frameProvider, vanishAnimationSheet);
+
+
 		let matches = [];
 		
-		do{
-			
-			for(let i = 0; i < matches.length; i++){
-				for(let j = 0; j < matches[i].length; j++){
+		do
+		{	
+			for(let i = 0; i < matches.length; i++)
+			{
+				for(let j = 0; j < matches[i].length; j++)
+				{
 					this.board.removeItem(matches[i][j]);
 				}
 			}
-				
+			
 			this.board.refill();
-			
-			matches = this.judge.matchLines(matrix);
-
-			//let blues = judge.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Blue, 3);
-			//let green = judge.getVerticalCombinations(matrix, function(item){return item.getColor()}, Color.Green, 3);
-
-			
-			
-		}while(matches.length > 0)
+			matches = this.judge.matchLines(matrix);			
+		}
+		while(matches.length > 0)
 		
 		this.board.updateItemsPositions();
 		this.board.draw();
@@ -137,9 +190,7 @@ class Game
 			this.uniformAtlas=document.getElementById("uniform_atlas");
 			
 			this.canvasContextWrapper.drawImage(img, 320, 0, 320, 320, 400, 100, 320, 320)
-			
-			var animationElement;
-			
+						
 			let animationSheet = 
 			{
 				"data": 
@@ -178,71 +229,7 @@ class Game
 				}
 			}
 			
-			let vanishAnimationSheet = 
-			{
-				"data": 
-				{
-					"time": 750,
-					"frames": 
-					[
-						{
-							"x": 0,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						},
-						{
-							"x": 128,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						},
-						{
-							"x": 256,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						},
-						{
-							"x": 384,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						},
-						{
-							"x": 384,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						},
-						{
-							"x": 512,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						},
-						{
-							"x": 640,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						},
-						{
-							"x": 768,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						},
-						{
-							"x": 896,
-							"y": 0,
-							"w": 128,
-							"h": 128
-						}
-					]
 
-				}
-			}
 		
 			let runAnimationData = animationSheet.data["numbers"];
 						
@@ -271,11 +258,22 @@ class Game
 		
 		let ad = this.animationElement.update(timestamp);
 		let vad = this.vanishAnimationElement.update(timestamp);
+
+		if(this.animationsManager.hasQueues()){
+			this.animationsManager.update(timestamp);
+			const aes = this.animationsManager.getAllAnimationElements();
+
+			for(const ae of aes){
+				const ad = ae.currentFrameAnimationData;
+				this.canvasContextWrapper.drawImage(this.itemsVanishNormalSpritesheet, ad.x, ad.y, ad.w, ad.h, ae.getX(), ae.getY(), ad.w*0.8, ad.h*0.8);
+			}
+		}
 	  
 		this.tweenObjectManager.updateAndRemoveCompletedTweenObjects(timestamp);
 		this.canvasContextWrapper.drawImage(this.uniformAtlas, ad.x, ad.y, ad.w, ad.h, 750, 200, ad.w, ad.h);
 		this.canvasContextWrapper.drawImage(this.itemsVanishNormalSpritesheet, vad.x, vad.y, vad.w, vad.h, 750, 600, vad.w, vad.h);
-	  
+
+
 		this.board.draw();
 		window.requestAnimationFrame((timestamp)=>{this.step(timestamp)});
 	}
