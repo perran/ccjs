@@ -11,7 +11,7 @@ class Board
 		this.tweenObjectManager = tweenObjectManager;
 		this.judge = judge;
 		this.gameTime = gameTime;
-		this.itemSize = 90;
+		this.itemSize = 128;
 		this.animationsManager = animationsManager;
 		this.frameProvider = frameProvider;
 		this.vanishAnimationSheet = vanishAnimationSheet;
@@ -134,7 +134,7 @@ class Board
 					const itemToRemoveRectangle = itemToRemove.getRectangle();
 					const removeAnimationElement = new AnimationElementPlayOnce(
 						this.frameProvider, 
-						this.vanishAnimationSheet.data,
+						this.vanishAnimationSheet[itemToRemove.color.getName().toLowerCase()],
 						this.gameTime.getCurrentTime(),
 						itemToRemoveRectangle.getX(),
 						itemToRemoveRectangle.getY()

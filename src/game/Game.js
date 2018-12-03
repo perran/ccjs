@@ -21,8 +21,22 @@ class Game
 		this.animationsManager;
 	}
 	
-	run()
+	async run()
 	{
+		let vanishAnimationSheet;
+
+
+		try{
+			let response = await fetch("items_vanish_normal.json");
+			if (response.ok) {
+				vanishAnimationSheet = await response.json();
+			} else {
+				throw new Error(response);
+			}
+		} catch(error) {
+			console.error('getJson', error);
+		}
+
 		let randomWrapper = new RandomWrapper();
 		var randomizer = new Randomizer(randomWrapper);
 		var itemFactory = new ItemFactory(randomizer);
@@ -39,9 +53,6 @@ class Game
 		var canvas = document.getElementById("myCanvas");
 		let eventListener = new EventListener(canvas);
 		this.cmi = new CanvasMouseInteractor(canvas, this, eventListener);
-		
-		var x = -1;
-		var y = -1;
 		
 		this.cmi.enableListenToMouseUp();
 		this.cmi.enableListenToMouseDown();
@@ -62,72 +73,6 @@ class Game
 		this.animationsManager = new AnimationsManager();
 		
 		this.gameTime = new GameTime();
-		
-		let vanishAnimationSheet = 
-		{
-			"data": 
-			{
-				"time": 250,
-				"frames": 
-				[
-					{
-						"x": 0,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					{
-						"x": 128,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					{
-						"x": 256,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					{
-						"x": 384,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					{
-						"x": 384,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					{
-						"x": 512,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					{
-						"x": 640,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					{
-						"x": 768,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					},
-					{
-						"x": 896,
-						"y": 0,
-						"w": 128,
-						"h": 128
-					}
-				]
-
-			}
-		}
 
 		this.board = new Board(matrix, 6, 5, boardView, pointInShapeDetector, itemFactory, this.tweenObjectManager, this.judge,
 			this.gameTime, this.animationsManager, frameProvider, vanishAnimationSheet);
@@ -237,7 +182,6 @@ class Game
 
 			//runs once
 			window.requestAnimationFrame((timestamp)=>{
-				this.vanishAnimationElement = new AnimationElement(frameProvider, vanishAnimationSheet.data, timestamp);
 				this.animationElement = new AnimationElement(frameProvider, runAnimationData, timestamp);
 				this.step(timestamp)
 			});
@@ -257,7 +201,6 @@ class Game
 		this.gameTime.setCurrentTime(timestamp);
 		
 		let ad = this.animationElement.update(timestamp);
-		let vad = this.vanishAnimationElement.update(timestamp);
 
 		if(this.animationsManager.hasQueues()){
 			this.animationsManager.update(timestamp);
@@ -265,14 +208,12 @@ class Game
 
 			for(const ae of aes){
 				const ad = ae.currentFrameAnimationData;
-				this.canvasContextWrapper.drawImage(this.itemsVanishNormalSpritesheet, ad.x, ad.y, ad.w, ad.h, ae.getX(), ae.getY(), ad.w*0.8, ad.h*0.8);
+				this.canvasContextWrapper.drawImage(this.itemsVanishNormalSpritesheet, ad.x, ad.y, ad.w, ad.h, ae.getX(), ae.getY(), ad.w, ad.h);
 			}
 		}
 	  
 		this.tweenObjectManager.updateAndRemoveCompletedTweenObjects(timestamp);
 		this.canvasContextWrapper.drawImage(this.uniformAtlas, ad.x, ad.y, ad.w, ad.h, 750, 200, ad.w, ad.h);
-		this.canvasContextWrapper.drawImage(this.itemsVanishNormalSpritesheet, vad.x, vad.y, vad.w, vad.h, 750, 600, vad.w, vad.h);
-
 
 		this.board.draw();
 		window.requestAnimationFrame((timestamp)=>{this.step(timestamp)});
