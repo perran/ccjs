@@ -1,17 +1,15 @@
-var PointInShapeDetector = (function()
+class PointInShapeDetector
 {
-	function PointInShapeDetector()
+	constructor()
 	{
 	}
 	
-	PointInShapeDetector.prototype.isInsideRectangle = function(x, y, rectangle)
+	isInsideRectangle(x, y, rectangle)
 	{
 		return (x >= rectangle.x && 
 				x <= rectangle.x + rectangle.width &&
 				y >= rectangle.y &&
 				y <= rectangle.y + rectangle.height);
 
-	};
-
-	return PointInShapeDetector;
-})();
+	}
+}

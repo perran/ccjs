@@ -1,25 +1,23 @@
-var Item = (function()
+class Item
 {
-	function Item(color, rectangle)
+	constructor(color, rectangle)
 	{
 		this.color = color;
 		this.rectangle = rectangle;
 	}
 	
-	Item.prototype.getColor = function()
+	getColor()
 	{
 		return this.color;
-	};
+	}
 	
-	Item.prototype.getRectangle = function()
+	getRectangle()
 	{
 		return this.rectangle;
-	};
+	}
 	
-	Item.prototype.print = function()
+	print()
 	{
 		return "color: " + this.color.getName();
-	};
-	
-	return Item;
-})();
+	}
+}

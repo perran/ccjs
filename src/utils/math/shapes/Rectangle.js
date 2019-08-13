@@ -1,6 +1,6 @@
-var Rectangle = (function()
+class Rectangle
 {
-	function Rectangle(x, y, width, height)
+	constructor(x, y, width, height)
 	{
 		this.x = x;
 		this.y = y;
@@ -8,35 +8,33 @@ var Rectangle = (function()
 		this.height = height;
 	}
 
-	Rectangle.prototype.getX = function()
+	getX()
 	{
 		return this.x;
-	};
+	}
 	
-	Rectangle.prototype.setX = function(x)
+	setX(x)
 	{
 		this.x = x;
-	};
+	}
 	
-	Rectangle.prototype.getY = function()
+	getY()
 	{
 		return this.y;
-	};
+	}
 	
-	Rectangle.prototype.setY = function(y)
+	setY(y)
 	{
 		this.y = y;
-	};
+	}
 	
-	Rectangle.prototype.getWidth = function()
+	getWidth()
 	{
 		return this.width;
-	};
+	}
 	
-	Rectangle.prototype.getHeight = function()
+	getHeight()
 	{
 		return this.height;
-	};
-	
-	return Rectangle;
-})();
+	}
+}
