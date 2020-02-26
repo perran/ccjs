@@ -1,4 +1,13 @@
-class Game
+import {Board} from './Board.js';
+import {RandomWrapper} from '../utils/wrappers/RandomWrapper.js';
+import {Randomizer} from '../utils/Randomizer.js';
+import {ItemFactory} from './ItemFactory.js';
+import {MatcherRules} from './MatcherRules.js';
+import {Judge} from './Judge.js';
+import {EventListener} from '../utils/EventListener.js';
+import {CanvasMouseInteractor} from '../utils/CanvasMouseInteractor.js';
+
+export class Game
 {
 
 	constructor()

@@ -1,4 +1,4 @@
-class MatcherRules
+export class MatcherRules
 {
 	constructor()
 	{

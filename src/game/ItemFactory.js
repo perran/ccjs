@@ -1,4 +1,4 @@
-class ItemFactory
+export class ItemFactory
 {
 	constructor(randomizer)
 	{

@@ -4,7 +4,7 @@
 		<meta charset="utf-8"/>
 		<title>CCSJ</title>
 		
-		<script type="text/javascript" src="../utils/TweenObjectManager.js"></script>
+		<!-- <script type="text/javascript" src="../utils/TweenObjectManager.js"></script>
 		<script type="text/javascript" src="../utils/TweenQueue.js"></script>	
 		<script type="text/javascript" src="../utils/canvas/FrameProvider.js"></script>
 		<script type="text/javascript" src="../utils/datetime/TimeParser.js"></script>
@@ -22,8 +22,8 @@
 		<script type="text/javascript" src="../utils/animation/AnimationsManager.js"></script>
 		<script type="text/javascript" src="Color.js"></script>
 		<script type="text/javascript" src="Item.js"></script>
-		<script type="text/javascript" src="Board.js"></script>
-		<script type="text/javascript" src="Game.js"></script>
+		<script type="text/javascript" src="Board.js" type="module"></script>
+		<script type="text/javascript" src="Game.js" type="module"></script>
 		<script type="text/javascript" src="CanvasContextWrapper.js"></script>
 		<script type="text/javascript" src="BoardView.js"></script>
 		<script type="text/javascript" src="../utils/math/hitdetection/PointInShapeDetector.js"></script>
@@ -35,7 +35,7 @@
 		<script type="text/javascript" src="../utils/TweenMove.js"></script>
 		<script type="text/javascript" src="MatcherRules.js"></script>
 		<script type="text/javascript" src="Judge.js"></script>
-		
+		 -->
 
 
 	</head>
@@ -46,7 +46,8 @@
 	<img id=items_vanish_normal_spritesheet src="../../resources/items_vanish_normal.png" alt="Atlas" width=1024px; height=512px; style="display: none;">
 	
 	<canvas id="myCanvas" width="1000" height="800" style="border:2px solid #000000;"></canvas>
-		<script type="text/javascript">
+		<script type="module">
+			import {Game} from './game/Game.js';
 			document.write("Start game");
 			var game = new Game();
 			game.run();

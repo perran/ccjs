@@ -1,4 +1,4 @@
-class Board
+export class Board
 {
 	constructor(matrix, width, height, boardView, pointInShapeDetector, itemFactory, tweenObjectManager, judge, gameTime, animationsManager, frameProvider, vanishAnimationSheet)
 	{

@@ -1,4 +1,4 @@
-class CanvasMouseInteractor
+export class CanvasMouseInteractor
 {
 	constructor(canvas, callbackHandler, eventListener) 
 	{

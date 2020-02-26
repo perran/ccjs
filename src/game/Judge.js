@@ -1,4 +1,4 @@
-class Judge
+export class Judge
 {
 	constructor(matcherRules)
 	{

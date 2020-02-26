@@ -1,4 +1,4 @@
-class Randomizer
+export class Randomizer
 {
     constructor(randomWrapper)
     {

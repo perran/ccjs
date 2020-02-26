@@ -1,4 +1,4 @@
-class RandomWrapper
+export class RandomWrapper
 {
     random()
     {
